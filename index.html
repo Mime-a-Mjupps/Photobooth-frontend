@@ -1,0 +1,374 @@
+<!doctype html>
+<html lang="en" class="h-100">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="author" content="Filip Nyquist">
+    <meta name="generator" content="Hugo 0.101.0">
+    <title>PBooth</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0/dist/css/bootstrap.min.css"
+        integrity="sha384-gH2yIJqKdNHPEq0n4Mqa/HGKIhSkIHeL5AyhkYV8i59U5AR6csBvApHHNl/vI1Bx" crossorigin="anonymous">
+    <meta name="theme-color" content="#712cf9">
+
+
+    <style>
+        .bd-placeholder-img {
+            font-size: 1.125rem;
+            text-anchor: middle;
+            -webkit-user-select: none;
+            -moz-user-select: none;
+            user-select: none;
+        }
+
+        @media (min-width: 768px) {
+            .bd-placeholder-img-lg {
+                font-size: 3.5rem;
+            }
+        }
+
+        .b-example-divider {
+            height: 3rem;
+            background-color: rgba(0, 0, 0, .1);
+            border: solid rgba(0, 0, 0, .15);
+            border-width: 1px 0;
+            box-shadow: inset 0 .5em 1.5em rgba(0, 0, 0, .1), inset 0 .125em .5em rgba(0, 0, 0, .15);
+        }
+
+        .b-example-vr {
+            flex-shrink: 0;
+            width: 1.5rem;
+            height: 100vh;
+        }
+
+        .bi {
+            vertical-align: -.125em;
+            fill: currentColor;
+        }
+
+        .nav-scroller {
+            position: relative;
+            z-index: 2;
+            height: 2.75rem;
+            overflow-y: hidden;
+        }
+
+        .nav-scroller .nav {
+            display: flex;
+            flex-wrap: nowrap;
+            padding-bottom: 1rem;
+            margin-top: -1px;
+            overflow-x: auto;
+            text-align: center;
+            white-space: nowrap;
+            -webkit-overflow-scrolling: touch;
+        }
+
+        .overlay {
+            height: 100%;
+            width: 100%;
+            position: fixed;
+            z-index: 1;
+            top: 0;
+            left: 0;
+            display: none;
+            background-color: rgb(0, 0, 0);
+            background-color: rgba(0, 0, 0, 0.1);
+            overflow-x: hidden;
+            transition: 0.5s;
+        }
+
+        .overlay-content {
+            position: relative;
+            top: 40%;
+            width: 100%;
+            text-align: center;
+            margin-top: 30px;
+        }
+
+        .overlay p {
+            padding: 8px;
+            text-decoration: none;
+            font-size: 36px;
+            color: #818181;
+            display: block;
+            transition: 0.3s;
+        }
+    </style>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.1/jquery.min.js"
+        integrity="sha512-aVKKRRi/Q/YV+4mjoKBsE4x3H+BkegoM/em46NNlCqNTmUYADjBbeNefNxYV7giUp0VxICtqdrbqU7iVaeZNXA=="
+        crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <!-- Custom styles for this template -->
+    <link href="cover.css" rel="stylesheet">
+    <script>let allowStart = false;</script>
+</head>
+
+<body class="d-flex h-100 text-center text-bg-dark">
+    <div id="myNav" class="overlay">
+        <!-- Overlay content -->
+        <div class="overlay-content">
+            <h1 id="countdown" style="font-size: 100px;">5</h1>
+        </div>
+
+    </div>
+    <div class="cover-container d-flex w-100 h-100 p-3 mx-auto flex-column">
+        <header class="mb-auto">
+            <div>
+                <h3 class="mb-0">Photobooth</h3>
+            </div>
+        </header>
+        <main id="step1" class="px-3" style="display: block;">
+            <h1>Välkommen!</h1>
+            <p class="lead">Här kan du och dina vänner ta ett par banging bilder på er själva. Fett coolt eller hur?</p>
+            <p class="lead">
+                <button id="startBtn" class="btn btn-lg btn-secondary fw-bold border-white bg-white">Klicka på "ENTER"
+                    för
+                    att
+                    börja!</button>
+            </p>
+
+        </main>
+
+        <main id="step2" class="px-3" style="display: none;">
+            <h1>Nämen titta här! :O</h1>
+            <video class=" previewVideo" id="previewVideo" playsinline autoplay></video>
+            <p class="lead">En nedräkning från 3 kommer att börja så fort du klickar!</p>
+            <p class="lead">
+                <button id="startCountdownBtn" class="btn btn-lg btn-secondary fw-bold border-white bg-white">Klicka
+                    "ENTER" för att starta nedräkningen!</button>
+            </p>
+        </main>
+        <main id="step3" class="px-3" style="display: none;">
+            <h1>Vilken fin bild! Du får en video på köpet också! ;)</h1>
+            <div class="container d-flex w-100 h-100 p-3 mx-auto flex-column">
+                <div class="row">
+                    <div class="col-6">
+                        <canvas style="border:solid 1px #ddd;background-color:white; width: 100%" id="imageCanvas"
+                            width="1920" height="1080"></canvas>
+                    </div>
+                    <div class="col-6">
+                        <video id="recordedVideo" playsinline autoplay loop muted style="width:100%"></video>
+                    </div>
+                </div>
+                <button id="startCountdownBtn" class="btn btn-lg btn-secondary fw-bold border-white bg-white">Klicka på
+                    "ENTER" för att få bilderna!</button>
+        </main>
+        <main id="step4" class="px-3" style="display: none;">
+            <h1>Såhär får du tag i dina bilder:</h1>
+            <a id="res" class="btn btn-lg btn-secondary fw-bold border-white bg-white">Vänligen vänta medan bilderna
+                laddas upp..</a>
+        </main>
+
+        <footer class="mt-auto text-white-50">
+            <p>Villan Photobooth av <a href="#" class="text-white">Mr.Mime och Mjupps</a>.<br> Vid använding godkänner du våra användarvillkor som du hittar på <a href="#" class="text-white">lekskola.com/av.html</a></p>
+        </footer>
+    </div>
+
+
+
+</body>
+<script>
+    let uploadID;
+    let videoBlob;
+    let curStep = 1;
+    let mediaRecorder;
+    let recordedChunks;
+    let recording = false;
+    const constraints = {
+        audio: false,
+        video: {
+            width: 1920,
+            height: 1080,
+            frameRate: 50
+        }
+    }
+    //First make sure that we get the camera into view with a helper function.
+    function startPreview() {
+        //We want to output to preview id.
+        let video = document.querySelector("#previewVideo");
+        //Now lets request the webcam from the browser.
+        if (navigator.mediaDevices.getUserMedia) {
+            navigator.mediaDevices.getUserMedia(constraints)
+                .then(function (stream) {
+                    video.srcObject = stream;
+                })
+                .catch(function (err0r) {
+                    console.log("Something went wrong!");
+                    console.log(err0r);
+                });
+        }
+    }
+    //This function stops the preview completely.
+    function stopPreview() {
+        let video = document.querySelector("#previewVideo");
+        let stream = video.srcObject;
+        let tracks = stream.getTracks();
+
+        for (let i = 0; i < tracks.length; i++) {
+            let track = tracks[i];
+            track.stop();
+        }
+        video.srcObject = null;
+    }
+
+    function startRecording() {
+        let previewVideo = document.getElementById("previewVideo");
+        //const stream = canvas.captureStream(25);
+        mediaRecorder = new MediaRecorder(previewVideo.srcObject, {
+            mimeType: 'video/webm',
+            ignoreMutedMedia: true,
+            videoBitsPerSecond: 2.5 * 1000 * 1000, // 2-5 Mbit/s
+        });
+        recordedChunks = [];
+        mediaRecorder.ondataavailable = e => {
+            if (e.data.size > 0) {
+                recordedChunks.push(e.data);
+            }
+        };
+        mediaRecorder.start();
+        //Then stop automatically after x ms.
+        setTimeout(endRecording, 3000);
+    }
+
+    function endRecording() {
+        mediaRecorder.stop();
+        let video = document.querySelector("#recordedVideo");
+        setTimeout(() => {
+            const blob = new Blob(recordedChunks, {
+                type: "video/webm"
+            });
+            videoBlob = blob;
+            const url = URL.createObjectURL(blob);
+            video.src = url;
+        }, 0);
+    }
+
+    function takePicture() {
+        let video = document.querySelector("#previewVideo");
+        let canvas = document.getElementById("imageCanvas");
+        let ctx = canvas.getContext("2d");
+        ctx.drawImage(video, 0, 0);
+    }
+
+    function runCountdown() {
+        //First start countdown.
+        document.getElementById("myNav").style.display = "block";
+        cDown(3);
+    }
+
+    function cDown(val) {
+        let cd = document.getElementById("countdown")
+        if (val == 3) {
+            startRecording();
+        }
+        if (val > 0) {
+            //Keep counting down as usual...
+            cd.innerText = val;
+            setTimeout(cDown, 1000, val - 1);
+        } else {
+            //Lets display 
+            cd.innerText = "STILLA!";
+            setTimeout(takePicture(), 400);
+            setTimeout(() => {
+                document.getElementById("myNav").style.display = "none";
+            }, 1000);
+            stopPreview();
+        }
+    }
+
+    function stepThrough() {
+        let oStep = document.getElementById("step" + curStep);
+        oStep.style.display = "none";
+        let nStep = document.getElementById("step" + (curStep + 1));
+        nStep.style.display = "block";
+        curStep++;
+    }
+    //This function uploads the picture and video taken as base64 encoded data to the server.
+    function uploadToServer() {
+        //First lets get a base64 representation of the Photo.
+        let pic = document.getElementById("imageCanvas");
+        //picBase64 = pic.toDataURL();
+        picBase64 = pic.toDataURL("image/jpeg"); // Trying out JPEG, seems to be a LOT smaller.
+        //Video
+        var reader = new FileReader();
+        reader.readAsDataURL(videoBlob);
+        reader.onloadend = function () {
+            let vidBase64 = reader.result;
+            //Here we can now POST this to the server and work with the response...
+            const url = 'https://REPLACEME/upload';
+            // post body data 
+            const content = {
+                key: "REPLACEME",
+                picture: picBase64,
+                video: vidBase64,
+            };
+            console.log(content.picture)
+            console.log(content.video)
+            const options = {
+                method: 'POST',
+                body: JSON.stringify(content),
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            }
+            fetch(url, options)
+                .then(res => res.json())
+                .then(res => {
+                    console.log(res);
+                    uploadID = res.id;
+                    let resRef = document.getElementById("res");
+                    resRef.innerText = ">>> Skriver ut länk... <<<"
+                    let xd = fetch("http://REPLACEME/" + uploadID);
+                    setTimeout(location.reload(), 1000);
+                });
+            return true
+        }
+    }
+</script>
+
+<script>
+    let cnt = 1;
+    let isDoneUpload = false;
+    $(document).ready(function () {
+        startPreview();
+        setTimeout(function () {
+        allowStart = true;
+    }, 3000)
+    });
+    $(document).on('keypress', function (e) {
+        // Added functionality for backspace to "restart".
+        if (e.which == 8) {
+            location.reload();
+        }
+        if (e.which == 13) {
+            console.log(cnt);
+            if (cnt == 1 && allowStart) {
+                //We are on first page, activate camera and step to #2.
+                //startPreview(); - lets activate it directly on load.
+                stepThrough();
+                cnt++;
+            } else if (cnt == 2) {
+                //Take picture and change view.
+                runCountdown();
+                console.log("After countdown");
+                setTimeout(stepThrough, 4000);
+                cnt++;
+            } else if (cnt == 3) {
+                isDoneUpload = uploadToServer();
+                stepThrough();
+                cnt++;
+            } else if (cnt == 4 & isDoneUpload) {
+                location.reload();
+                //cnt++;
+            }
+            //cnt++;
+        }
+    });
+</script>
+<script>
+
+</script>
+
+</html>
